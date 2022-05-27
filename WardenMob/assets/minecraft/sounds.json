@@ -1,0 +1,29 @@
+{
+    "wardendeath": {
+        "category": "master",
+        "sounds": [
+            {
+                "name": "warden/wardendeath",
+                "stream": true
+            }
+        ]
+    },
+    "wardenhurt": {
+        "category": "master",
+        "sounds": [
+            {
+                "name": "warden/wardenhurt",
+                "stream": true
+            }
+        ]
+    },
+    "wardenidle": {
+        "category": "master",
+        "sounds": [
+            {
+                "name": "warden/wardenidle",
+                "stream": true
+            }
+        ]
+    }
+}
