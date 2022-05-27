@@ -1,0 +1,9 @@
+name: WardenMob
+version: 1.0.0
+api-version: 1.16
+main: me.ahmetdev510.WardenMob
+commands:
+  wardenmob:
+    description: Warden Mob Spawn
+    usage: /wardenmob
+    permission: wardenmob.mob
