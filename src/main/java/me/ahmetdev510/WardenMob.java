@@ -23,7 +23,7 @@ public class WardenMob extends JavaPlugin implements Listener {
 
 
     public FileConfiguration config = getConfig();
-    
+
 
     @Override
     public void onEnable() {
@@ -52,7 +52,8 @@ public class WardenMob extends JavaPlugin implements Listener {
                 IronGolem z = (IronGolem) mob;
                 z.setCustomName("§cWarden");
                 z.setCustomNameVisible(config.getBoolean("wardenmob.wardenNameVisible"));
-                z.setHealth(Math.min(Math.max(config.getInt("wardenmob.health"), config.getInt("wardenmob.health")), z.getMaxHealth()));
+                z.setMaxHealth(config.getInt("wardenmob.health"));
+                z.setHealth(z.getMaxHealth());
                 if(config.getBoolean("wardenmob.sound") == true) {
                     p.playSound(p.getLocation(), "minecraft:wardenidle", SoundCategory.MASTER, 100, 1);
                 }
@@ -124,7 +125,6 @@ public class WardenMob extends JavaPlugin implements Listener {
                             if(WardenAttack.contains(p.getUniqueId())) {
                                 golem.setTarget(Bukkit.getPlayer(p.getUniqueId()));
                                 golem.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(config.getDouble("wardenmob.MovementSpeed"));
-
                             }else{
                                 if(p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) {
                                     return;
@@ -240,7 +240,8 @@ public class WardenMob extends JavaPlugin implements Listener {
             IronGolem z = (IronGolem) mob;
             z.setCustomName("§cWarden");
             z.setCustomNameVisible(config.getBoolean("wardenmob.wardenNameVisible"));
-            z.setHealth(Math.min(Math.max(config.getInt("wardenmob.health"), config.getInt("wardenmob.health")), z.getMaxHealth()));
+            z.setMaxHealth(config.getInt("wardenmob.health"));
+            z.setHealth(z.getMaxHealth());
         }
 
     }
