@@ -1,8 +1,7 @@
 package me.ahmetdev510;
 
 import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -17,20 +16,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
-import static org.bukkit.configuration.file.YamlConfiguration.*;
 
 public class WardenMob extends JavaPlugin implements Listener {
 
 
     public FileConfiguration config = getConfig();
-
-
-    public static HashMap<String, String> messageData = new HashMap<String, String>();
-
+    
 
     @Override
     public void onEnable() {
@@ -59,13 +52,16 @@ public class WardenMob extends JavaPlugin implements Listener {
                 IronGolem z = (IronGolem) mob;
                 z.setCustomName("§cWarden");
                 z.setCustomNameVisible(config.getBoolean("wardenmob.wardenNameVisible"));
-                z.setHealth(config.getInt("wardenmob.health"));
-                p.playSound(p.getLocation(), "minecraft:wardenidle", SoundCategory.MASTER, 100, 1);
+                z.setHealth(Math.min(Math.max(config.getInt("wardenmob.health"), config.getInt("wardenmob.health")), z.getMaxHealth()));
+                if(config.getBoolean("wardenmob.sound") == true) {
+                    p.playSound(p.getLocation(), "minecraft:wardenidle", SoundCategory.MASTER, 100, 1);
+                }
                 sender.sendMessage("§6§lMOB: §fMob warden spawned!");
             }
         }
         return true;
     }
+
 
 
     @EventHandler
@@ -76,12 +72,15 @@ public class WardenMob extends JavaPlugin implements Listener {
                 return;
             }else{
                 if(e.getEntity().getCustomName().equalsIgnoreCase("§cWarden")) {
+                    e.getDrops().clear();
                     e.getEntity().getWorld().dropItemNaturally(e.getEntity().getLocation(), new ItemStack(Material.getMaterial(config.getString("wardenmob.drop.dropitem")),config.getInt("wardenmob.drop.dropsize")));
 
                 }
             }
         }
     }
+
+
 
     @EventHandler
     public void onInteract(PlayerInteractAtEntityEvent e) {
@@ -120,34 +119,22 @@ public class WardenMob extends JavaPlugin implements Listener {
                         return;
                     }else{
                         if(entity.getCustomName().equalsIgnoreCase("§cWarden")) {
-                            if(config.getBoolean("wardenmob.sound") == true) {
 
-                                    IronGolem golem = (IronGolem) entity;
-                                    if(WardenAttack.contains(p.getUniqueId())) {
-                                        golem.setTarget(Bukkit.getPlayer(p.getUniqueId()));
-                                    }else{
-                                        if(p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) {
-                                            return;
-                                        }else{
-                                            p.playSound(p.getLocation(), "minecraft:wardenidle", SoundCategory.MASTER, 100, 1);
-                                            WardenAttack.add(p.getUniqueId());
-                                        }
-
-                                    }
-
+                            IronGolem golem = (IronGolem) entity;
+                            if(WardenAttack.contains(p.getUniqueId())) {
+                                golem.setTarget(Bukkit.getPlayer(p.getUniqueId()));
+                                golem.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(config.getDouble("wardenmob.MovementSpeed"));
 
                             }else{
-                                IronGolem golem = (IronGolem) entity;
-                                if(WardenAttack.contains(p.getUniqueId())) {
-                                    golem.setTarget(Bukkit.getPlayer(p.getUniqueId()));
+                                if(p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) {
+                                    return;
                                 }else{
-                                    if(p.getGameMode().equals(GameMode.CREATIVE) || p.getGameMode().equals(GameMode.SPECTATOR)) {
-                                        return;
-                                    }else{
-                                        WardenAttack.add(p.getUniqueId());
+                                    if(config.getBoolean("wardenmob.sound") == true) {
+                                        p.playSound(p.getLocation(), "minecraft:wardenidle", SoundCategory.MASTER, 100, 1);
                                     }
-
+                                    WardenAttack.add(p.getUniqueId());
                                 }
+
                             }
 
                         }
@@ -195,6 +182,13 @@ public class WardenMob extends JavaPlugin implements Listener {
                     }
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void damageHandler(EntityDamageByEntityEvent e){
+        if(e.getEntity() instanceof Player && e.getDamager() instanceof IronGolem) {
+            e.setDamage(config.getInt("wardenmob.damage"));
         }
     }
 
@@ -246,7 +240,7 @@ public class WardenMob extends JavaPlugin implements Listener {
             IronGolem z = (IronGolem) mob;
             z.setCustomName("§cWarden");
             z.setCustomNameVisible(config.getBoolean("wardenmob.wardenNameVisible"));
-            z.setHealth(config.getInt("wardenmob.health"));
+            z.setHealth(Math.min(Math.max(config.getInt("wardenmob.health"), config.getInt("wardenmob.health")), z.getMaxHealth()));
         }
 
     }
