@@ -2,8 +2,11 @@ wardenmob:
   world: world
   spawnschance: 2
   health: 80
+  damage: 10
+  MovementSpeed: 0.3
   wardenNameVisible: false
   sound: true
   drop:
     dropitem: DIAMOND
     dropsize: 2
+  
